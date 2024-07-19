@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: green
+    spec:
+      containers:
+      - name: my-app
+        image: nginx:alpine
+        volumeMounts:
+        - name: green-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: green-content
+        configMap:
+          name: green-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: green-config
+data:
+  index.html: |
+    <html>
+    <head><title>Green Version</title></head>
+    <body>
+      <h1>Welcome to the Green Version</h1>
+    </body>
+    </html>

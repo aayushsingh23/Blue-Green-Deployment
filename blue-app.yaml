@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: blue
+    spec:
+      containers:
+      - name: my-app
+        image: nginx:alpine
+        volumeMounts:
+        - name: blue-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: blue-content
+        configMap:
+          name: blue-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blue-config
+data:
+  index.html: |
+    <html>
+    <head><title>Blue Version</title></head>
+    <body>
+      <h1>Welcome to the Blue Version</h1>
+    </body>
+    </html>
